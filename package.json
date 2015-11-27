@@ -1,0 +1,16 @@
+{
+  "name"         : "instagram-on-map",
+  "version"      : "0.0.1",
+  "description"  : "Instagram on Map",
+  "main"         : "server\\server.js",
+  "author"       : "Thanabhat",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies" : {
+    "express"    : "latest",
+    "fs"    : "latest"
+  },
+  "license": "MIT"
+}
