@@ -3,6 +3,8 @@ var data;
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
 var MARKER_LIMIT = 100;
+var heatmap;
+var markerList = [];
 
 $(window).load(function() {
     getData();
@@ -45,9 +47,9 @@ function createMapMarker() {
         if(!locationInfo || !imageInfo) {
             continue;
         }
-        var contentString = '<img src="' + imageInfo[1] + '" height="300" width="300">' +
+        var contentString = '<img src="' + imageInfo[1] + '" height="200" width="200">' +
             '<div>Location: ' + data[i].LOCATION_NAME + '</div>' +
-            '<div>Caption: ' + data[i].CAPTION + '</div>' +
+            '<div style="max-height: 50px; overflow: auto;">Caption: ' + data[i].CAPTION + '</div>' +
             '<div>Username: ' + data[i].USERNAME + '</div>' +
             '<div>Like: ' + data[i].LIKE + '</div>';
         var infowindow = new google.maps.InfoWindow({
@@ -68,6 +70,8 @@ function createMapMarker() {
                 infowindow.open(map, marker);
             };
         })(marker, infowindow));
+
+        markerList.push(marker);
     }
 }
 
@@ -83,10 +87,22 @@ function createHeatMap() {
             weight: +data[i].LIKE
         });
     }
-    var heatmap = new google.maps.visualization.HeatmapLayer({
+    heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
         radius: 40,
         opacity: 0.85
     });
     heatmap.setMap(map);
+}
+
+function toggleHeatmap() {
+    if(heatmap) {
+        heatmap.setMap(heatmap.getMap() ? null : map);
+    }
+}
+
+function toggleMarker() {
+    for(var i = 0; i < markerList.length; i++) {
+        markerList[i].setMap(markerList[i].getMap() ? null : map);
+    }
 }
