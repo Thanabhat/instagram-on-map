@@ -2,7 +2,7 @@ var map;
 var data;
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
-var MARKER_LIMIT = 20;
+var MARKER_LIMIT = 100;
 
 $(window).load(function() {
     getData();
@@ -45,9 +45,14 @@ function createMapMarker() {
         if(!locationInfo || !imageInfo) {
             continue;
         }
-        var contentString = '<img src="' + imageInfo[1] + '" height="50" width="50" alt="' + data[i].CAPTION + '">';
+        var contentString = '<img src="' + imageInfo[1] + '" height="300" width="300">' +
+            '<div>Location: ' + data[i].LOCATION_NAME + '</div>' +
+            '<div>Caption: ' + data[i].CAPTION + '</div>' +
+            '<div>Username: ' + data[i].USERNAME + '</div>' +
+            '<div>Like: ' + data[i].LIKE + '</div>';
         var infowindow = new google.maps.InfoWindow({
-            content: contentString
+            content: contentString,
+            maxWidth: 350
         });
         var marker = new google.maps.Marker({
             position: {
