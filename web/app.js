@@ -33,8 +33,13 @@ function getData() {
 }
 
 function createMapData() {
-    var DATA_LIMIT = data.length < MARKER_LIMIT ? data.length : MARKER_LIMIT;
-    for(var i = 0; i < DATA_LIMIT; i++) {
+    createMapMarker();
+    createHeatMap();
+}
+
+function createMapMarker() {
+    var DATA_MARKER_LIMIT = data.length < MARKER_LIMIT ? data.length : MARKER_LIMIT;
+    for(var i = 0; i < DATA_MARKER_LIMIT; i++) {
         var locationInfo = data[i].LOCATION ? data[i].LOCATION.match(/(\d+.\d+),(\d+.\d+)/) : null;
         var imageInfo = data[i].IMAGE ? data[i].IMAGE.match(/Image:\s*(http.*)/) : null;
         if(!locationInfo || !imageInfo) {
@@ -52,11 +57,31 @@ function createMapData() {
             map: map,
             title: data[i].CAPTION
         });
-        infowindow.open(map, marker);
+        // infowindow.open(map, marker);
         google.maps.event.addListener(marker, 'click', (function(marker, infowindow) {
             return function() {
                 infowindow.open(map, marker);
             };
         })(marker, infowindow));
     }
+}
+
+function createHeatMap() {
+    var heatMapData = [];
+    for(var i = 0; i < data.length; i++) {
+        var locationInfo = data[i].LOCATION ? data[i].LOCATION.match(/(\d+.\d+),(\d+.\d+)/) : null;
+        if(!locationInfo) {
+            continue;
+        }
+        heatMapData.push({
+            location: new google.maps.LatLng(locationInfo[1], locationInfo[2]),
+            weight: +data[i].LIKE
+        });
+    }
+    var heatmap = new google.maps.visualization.HeatmapLayer({
+        data: heatMapData,
+        radius: 40,
+        opacity: 0.85
+    });
+    heatmap.setMap(map);
 }
