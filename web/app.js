@@ -47,9 +47,9 @@ function createMapMarker() {
         if(!locationInfo || !imageInfo) {
             continue;
         }
-        var contentString = '<img src="' + imageInfo[1] + '" height="200" width="200">' +
+        var contentString = '<img src="' + imageInfo[1] + '" height="300" width="300">' +
             '<div>Location: ' + data[i].LOCATION_NAME + '</div>' +
-            '<div style="max-height: 50px; overflow: auto;">Caption: ' + data[i].CAPTION + '</div>' +
+            '<div style="max-height: 80px; max-width: 350px; overflow: auto;">Caption: ' + data[i].CAPTION + '</div>' +
             '<div>Username: ' + data[i].USERNAME + '</div>' +
             '<div>Like: ' + data[i].LIKE + '</div>';
         var infowindow = new google.maps.InfoWindow({
@@ -90,7 +90,7 @@ function createHeatMap() {
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
         radius: 40,
-        opacity: 0.975
+        opacity: 1
     });
     heatmap.setMap(map);
 }
