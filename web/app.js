@@ -1,14 +1,19 @@
-var map;
-var data;
+var MAX_MARKER_LIMIT = 5000;
+
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
-var MARKER_LIMIT = 2000;
+
+var map;
+var data;
 var heatmap;
 var markerList = [];
+var CURRENT_MARKER_LIMIT = 1000;
+var isShowMarker = true;
 
 $(window).load(function() {
     getData();
     initialize();
+    bindOnMarkerLimitChange();
     $.when(onMapReady, onDataReady).done(function() {
         createMapData();
     });
@@ -40,8 +45,8 @@ function createMapData() {
 }
 
 function createMapMarker() {
-    var DATA_MARKER_LIMIT = data.length < MARKER_LIMIT ? data.length : MARKER_LIMIT;
-    for(var i = 0; i < DATA_MARKER_LIMIT; i++) {
+    var markerListLimit = data.length < MAX_MARKER_LIMIT ? data.length : MAX_MARKER_LIMIT;
+    for(var i = 0; i < markerListLimit; i++) {
         var locationInfo = data[i].LOCATION ? data[i].LOCATION.match(/(\d+.\d+),(\d+.\d+)/) : null;
         var imageInfo = data[i].IMAGE ? data[i].IMAGE.match(/Image:\s*(http.*)/) : null;
         if(!locationInfo || !imageInfo) {
@@ -61,7 +66,7 @@ function createMapMarker() {
                 lat: +locationInfo[1],
                 lng: +locationInfo[2]
             },
-            map: map,
+            map: null,
             title: data[i].LOCATION_NAME
         });
         // infowindow.open(map, marker);
@@ -73,6 +78,7 @@ function createMapMarker() {
 
         markerList.push(marker);
     }
+    renderMarker();
 }
 
 function createHeatMap() {
@@ -102,7 +108,23 @@ function toggleHeatmap() {
 }
 
 function toggleMarker() {
+    isShowMarker = !isShowMarker;
+    renderMarker();
+}
+
+function renderMarker() {
+    var showMarkerLimit = markerList.length < CURRENT_MARKER_LIMIT ? markerList.length : CURRENT_MARKER_LIMIT;
     for(var i = 0; i < markerList.length; i++) {
-        markerList[i].setMap(markerList[i].getMap() ? null : map);
+        markerList[i].setMap(isShowMarker && i < showMarkerLimit ? map : null);
     }
+}
+
+function bindOnMarkerLimitChange() {
+    CURRENT_MARKER_LIMIT = +($('#marker-limit')[0].value);
+    $('#marker-limit').on('change', function() {
+        CURRENT_MARKER_LIMIT = this.value;
+        if(isShowMarker) {
+            renderMarker();
+        }
+    });
 }

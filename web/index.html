@@ -10,6 +10,13 @@
 		<div id="floating-panel">
 			<button onclick="toggleHeatmap()">Toggle Heatmap</button>
 			<button onclick="toggleMarker()">Toggle Marker</button>
+			<span>Show marker: <span>
+			<select id="marker-limit">
+				<option value="1000" selected="selected">1000</option>
+				<option value="2000">2000</option>
+				<option value="5000">5000</option>
+				<option value="10000">10000</option>
+			</select>
 		</div>
 		<div id="map"></div>
 	</body>
