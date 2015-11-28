@@ -62,7 +62,7 @@ function createMapMarker() {
                 lng: +locationInfo[2]
             },
             map: map,
-            title: data[i].CAPTION
+            title: data[i].LOCATION_NAME
         });
         // infowindow.open(map, marker);
         google.maps.event.addListener(marker, 'click', (function(marker, infowindow) {
