@@ -47,7 +47,7 @@ function createMapMarker() {
         if(!locationInfo || !imageInfo) {
             continue;
         }
-        var contentString = '<img src="' + imageInfo[1] + '" height="300" width="300">' +
+        var contentString = '<img src="' + imageInfo[1] + '" height="350" width="350">' +
             '<div>Location: ' + data[i].LOCATION_NAME + '</div>' +
             '<div style="max-height: 80px; max-width: 350px; overflow: auto;">Caption: ' + data[i].CAPTION + '</div>' +
             '<div>Username: ' + data[i].USERNAME + '</div>' +
