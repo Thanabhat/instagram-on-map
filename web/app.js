@@ -2,7 +2,7 @@ var map;
 var data;
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
-var MARKER_LIMIT = 100;
+var MARKER_LIMIT = 500;
 var heatmap;
 var markerList = [];
 
@@ -84,13 +84,13 @@ function createHeatMap() {
         }
         heatMapData.push({
             location: new google.maps.LatLng(locationInfo[1], locationInfo[2]),
-            weight: +data[i].LIKE
+            weight: +data[i].LIKE || 1
         });
     }
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
         radius: 40,
-        opacity: 0.85
+        opacity: 0.975
     });
     heatmap.setMap(map);
 }
