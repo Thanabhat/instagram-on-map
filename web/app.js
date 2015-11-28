@@ -2,7 +2,7 @@ var map;
 var data;
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
-var MARKER_LIMIT = 500;
+var MARKER_LIMIT = 2000;
 var heatmap;
 var markerList = [];
 
