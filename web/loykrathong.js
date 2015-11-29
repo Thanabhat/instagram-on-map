@@ -5,7 +5,7 @@ var map;
 var data;
 var heatmap;
 var markerList = [];
-var isShowMarker = true;
+var isShowMarker = false;
 
 $(window).load(function() {
     getData();
@@ -19,7 +19,7 @@ function initialize() {
     var mapCanvas = document.getElementById('map');
     var mapOptions = {
         center: new google.maps.LatLng(13.736137, 100.533334),
-        zoom: 5,
+        zoom: 6,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     map = new google.maps.Map(mapCanvas, mapOptions);
@@ -67,7 +67,7 @@ function createHeatMap() {
     }
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
-        radius: 40,
+        radius: 50,
         opacity: 1
     });
     heatmap.setMap(map);

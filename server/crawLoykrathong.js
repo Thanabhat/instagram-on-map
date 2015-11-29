@@ -63,4 +63,4 @@ function crawTagRecentMedia(tag, count) {
     });
 }
 
-crawTagRecentMedia('ลอยกระทง', 1000);
+crawTagRecentMedia('ลอยกระทง', 5000);
