@@ -10,7 +10,10 @@
   },
   "dependencies" : {
     "express"    : "latest",
-    "fs"    : "latest"
+    "fs"         : "latest",
+    "request"    : "latest",
+    "async"      : "latest",
+    "lodash"     : "latest"
   },
   "license": "MIT"
 }
