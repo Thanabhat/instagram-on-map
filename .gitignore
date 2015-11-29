@@ -1,2 +1,4 @@
 node_modules
 server/access_token.txt
+node_err.txt
+node_log.txt

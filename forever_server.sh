@@ -1,0 +1,1 @@
+forever start server/server.js > node_log.txt 2> node_err.txt &
