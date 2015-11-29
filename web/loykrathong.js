@@ -31,6 +31,11 @@ function initialize() {
 function getData() {
     $.getJSON("data/loykrathong.json", function(json) {
         data = json;
+        //add small random number to separate markers on same location
+        for(var i = 0; i < data.length; i++) {
+            data[i].location.latitude += (Math.random() - 0.5) / 3000;
+            data[i].location.longitude += (Math.random() - 0.5) / 3000;
+        }
         onDataReady.resolve();
     });
 }
