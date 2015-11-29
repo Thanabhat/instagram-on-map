@@ -25,7 +25,7 @@ function crawTagRecentMedia(tag, count) {
                     }
                     if(json) {
                         data = JSON.parse(json);
-                        console.log('request success');
+                        console.log('request success: ' + data.data.length);
                     } else {
                         console.log('error in json data');
                         callback();
@@ -35,7 +35,12 @@ function crawTagRecentMedia(tag, count) {
                     var dataPrune = _.map(data.data, function(obj) {
                         return {
                             id: obj.id,
-                            location: obj.location
+                            location: obj.location,
+                            likes: obj.likes.count,
+                            comments: obj.comments.count,
+                            username: obj.user.username,
+                            image: obj.images.low_resolution.url,
+                            time: obj.created_time
                         }
                     });
                     dataPrune = _.filter(dataPrune, function(obj) {
@@ -63,4 +68,4 @@ function crawTagRecentMedia(tag, count) {
     });
 }
 
-crawTagRecentMedia('ลอยกระทง', 5000);
+crawTagRecentMedia('ลอยกระทง', 10000);

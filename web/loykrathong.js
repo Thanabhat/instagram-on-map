@@ -43,6 +43,13 @@ function createMapData() {
 function createMapMarker() {
     for(var i = 0; i < data.length; i++) {
         var locationInfo = data[i].location;
+        var contentString = '<img src="' + data[i].image + '" height="320" width="320">' +
+            '<div>Location: ' + data[i].location.name + '</div>' +
+            '<div>User: ' + data[i].username + '</div>';
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString,
+            maxWidth: 320
+        });
         var marker = new google.maps.Marker({
             position: {
                 lat: locationInfo.latitude,
@@ -51,6 +58,11 @@ function createMapMarker() {
             map: null,
             title: locationInfo.name
         });
+        google.maps.event.addListener(marker, 'click', (function(marker, infowindow) {
+            return function() {
+                infowindow.open(map, marker);
+            };
+        })(marker, infowindow));
         markerList.push(marker);
     }
     renderMarker();
