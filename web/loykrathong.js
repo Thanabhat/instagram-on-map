@@ -8,10 +8,13 @@ var markerList = [];
 var isShowMarker = false;
 
 $(window).load(function() {
+    NProgress.start();
     getData();
     initialize();
     $.when(onMapReady, onDataReady).done(function() {
+        NProgress.inc();
         createMapData();
+        NProgress.done();
     });
 });
 
@@ -24,18 +27,21 @@ function initialize() {
     }
     map = new google.maps.Map(mapCanvas, mapOptions);
     google.maps.event.addListenerOnce(map, 'idle', function() {
+        NProgress.inc();
         onMapReady.resolve();
     });
 }
 
 function getData() {
     $.getJSON("data/loykrathong.json", function(json) {
+        NProgress.inc();
         data = json;
         //add small random number to separate markers on same location
         for(var i = 0; i < data.length; i++) {
             data[i].location.latitude += (Math.random() - 0.5) / 3000;
             data[i].location.longitude += (Math.random() - 0.5) / 3000;
         }
+        NProgress.inc();
         onDataReady.resolve();
     });
 }
