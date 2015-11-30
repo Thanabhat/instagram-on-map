@@ -23,7 +23,7 @@ function initialize() {
     var mapOptions = {
         center: new google.maps.LatLng(13.736137, 100.533334),
         zoom: 6,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.HYBRID
     }
     map = new google.maps.Map(mapCanvas, mapOptions);
     google.maps.event.addListenerOnce(map, 'idle', function() {
@@ -97,10 +97,27 @@ function createHeatMap() {
     }
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
-        radius: 50,
-        opacity: 1
+        radius: 40,
+        opacity: 0.75
     });
     heatmap.setMap(map);
+    var gradient = [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+    ]
+    heatmap.set('gradient', gradient);
 }
 
 function toggleHeatmap() {
