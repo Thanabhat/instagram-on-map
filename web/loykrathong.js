@@ -36,6 +36,13 @@ function getData() {
     $.getJSON("data/loykrathong.json", function(json) {
         NProgress.inc();
         data = json;
+        data = data.filter(function(obj) {
+            var time = obj.time * 1000;
+            if(time > 1448438400000 && time < 1448481600000) {
+                return true;
+            }
+            return false;
+        });
         //add small random number to separate markers on same location
         for(var i = 0; i < data.length; i++) {
             data[i].location.latitude += (Math.random() - 0.5) / 3000;
