@@ -1,5 +1,3 @@
-var MAX_MARKER_LIMIT = 5000;
-
 var onMapReady = $.Deferred();
 var onDataReady = $.Deferred();
 
@@ -7,15 +5,16 @@ var map;
 var data;
 var heatmap;
 var markerList = [];
-var CURRENT_MARKER_LIMIT = 1000;
-var isShowMarker = true;
+var isShowMarker = false;
 
 $(window).load(function() {
+    NProgress.start();
     getData();
     initialize();
-    bindOnMarkerLimitChange();
     $.when(onMapReady, onDataReady).done(function() {
+        NProgress.inc();
         createMapData();
+        NProgress.done();
     });
 });
 
@@ -23,18 +22,33 @@ function initialize() {
     var mapCanvas = document.getElementById('map');
     var mapOptions = {
         center: new google.maps.LatLng(13.736137, 100.533334),
-        zoom: 5,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 6,
+        mapTypeId: google.maps.MapTypeId.HYBRID
     }
     map = new google.maps.Map(mapCanvas, mapOptions);
     google.maps.event.addListenerOnce(map, 'idle', function() {
+        NProgress.inc();
         onMapReady.resolve();
     });
 }
 
 function getData() {
-    $.getJSON("data/data.json", function(json) {
+    $.getJSON("data/loykrathong.json", function(json) {
+        NProgress.inc();
         data = json;
+        data = data.filter(function(obj) {
+            var time = obj.time * 1000;
+            if(time > 1448438400000 && time < 1448481600000) {
+                return true;
+            }
+            return false;
+        });
+        //add small random number to separate markers on same location
+        for(var i = 0; i < data.length; i++) {
+            data[i].location.latitude += (Math.random() - 0.5) / 3000;
+            data[i].location.longitude += (Math.random() - 0.5) / 3000;
+        }
+        NProgress.inc();
         onDataReady.resolve();
     });
 }
@@ -45,37 +59,28 @@ function createMapData() {
 }
 
 function createMapMarker() {
-    var markerListLimit = data.length < MAX_MARKER_LIMIT ? data.length : MAX_MARKER_LIMIT;
-    for(var i = 0; i < markerListLimit; i++) {
-        var locationInfo = data[i].LOCATION ? data[i].LOCATION.match(/(\d+.\d+),(\d+.\d+)/) : null;
-        var imageInfo = data[i].IMAGE ? data[i].IMAGE.match(/Image:\s*(http.*)/) : null;
-        if(!locationInfo || !imageInfo) {
-            continue;
-        }
-        var contentString = '<img src="' + imageInfo[1] + '" height="350" width="350">' +
-            '<div>Location: ' + data[i].LOCATION_NAME + '</div>' +
-            '<div style="max-height: 80px; max-width: 350px; overflow: auto;">Caption: ' + data[i].CAPTION + '</div>' +
-            '<div>Username: ' + data[i].USERNAME + '</div>' +
-            '<div>Like: ' + data[i].LIKE + '</div>';
+    for(var i = 0; i < data.length; i++) {
+        var locationInfo = data[i].location;
+        var contentString = '<img src="' + data[i].image + '" height="320" width="320">' +
+            '<div>Location: ' + data[i].location.name + '</div>' +
+            '<div>User: ' + data[i].username + '</div>';
         var infowindow = new google.maps.InfoWindow({
             content: contentString,
-            maxWidth: 350
+            maxWidth: 320
         });
         var marker = new google.maps.Marker({
             position: {
-                lat: +locationInfo[1],
-                lng: +locationInfo[2]
+                lat: locationInfo.latitude,
+                lng: locationInfo.longitude
             },
             map: null,
-            title: data[i].LOCATION_NAME
+            title: locationInfo.name
         });
-        // infowindow.open(map, marker);
         google.maps.event.addListener(marker, 'click', (function(marker, infowindow) {
             return function() {
                 infowindow.open(map, marker);
             };
         })(marker, infowindow));
-
         markerList.push(marker);
     }
     renderMarker();
@@ -84,21 +89,35 @@ function createMapMarker() {
 function createHeatMap() {
     var heatMapData = [];
     for(var i = 0; i < data.length; i++) {
-        var locationInfo = data[i].LOCATION ? data[i].LOCATION.match(/(\d+.\d+),(\d+.\d+)/) : null;
-        if(!locationInfo) {
-            continue;
-        }
+        var locationInfo = data[i].location;
         heatMapData.push({
-            location: new google.maps.LatLng(locationInfo[1], locationInfo[2]),
-            weight: +data[i].LIKE || 1
+            location: new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude),
+            weight: 1
         });
     }
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatMapData,
         radius: 40,
-        opacity: 1
+        opacity: 0.75
     });
     heatmap.setMap(map);
+    var gradient = [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+    ]
+    heatmap.set('gradient', gradient);
 }
 
 function toggleHeatmap() {
@@ -113,18 +132,7 @@ function toggleMarker() {
 }
 
 function renderMarker() {
-    var showMarkerLimit = markerList.length < CURRENT_MARKER_LIMIT ? markerList.length : CURRENT_MARKER_LIMIT;
     for(var i = 0; i < markerList.length; i++) {
-        markerList[i].setMap(isShowMarker && i < showMarkerLimit ? map : null);
+        markerList[i].setMap(isShowMarker ? map : null);
     }
-}
-
-function bindOnMarkerLimitChange() {
-    CURRENT_MARKER_LIMIT = +($('#marker-limit')[0].value);
-    $('#marker-limit').on('change', function() {
-        CURRENT_MARKER_LIMIT = this.value;
-        if(isShowMarker) {
-            renderMarker();
-        }
-    });
 }

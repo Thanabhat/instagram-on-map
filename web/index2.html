@@ -1,30 +1,30 @@
-<!-- 
-	This project created by group of computer engineering students
-	 from Chulalongkorn University on Social Network Analysis class.
- -->
-
 <html>
 	<head>
-		<title>Loykrathong Map</title>
+		<title>Instagram on Map</title>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			ga('create', 'UA-70843293-2', 'auto');
+			ga('create', 'UA-70843293-1', 'auto');
 			ga('send', 'pageview');
 		</script>
 		<link rel="stylesheet" type="text/css" href="app.css">
-		<link rel="stylesheet" type="text/css" href="lib/nprogress.css">
-		<script src="lib/nprogress.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
 		<script src="lib/jquery.min.js"></script>
-		<script src="loykrathong.js"></script>
+		<script src="app2.js"></script>
 	</head>
 	<body>
 		<div id="floating-panel">
 			<button onclick="toggleHeatmap()">Toggle Heatmap</button>
 			<button onclick="toggleMarker()">Toggle Marker</button>
+			<span>Show marker: <span>
+			<select id="marker-limit">
+				<option value="1000" selected="selected">1000</option>
+				<option value="2000">2000</option>
+				<option value="5000">5000</option>
+				<option value="10000">10000</option>
+			</select>
 		</div>
 		<div id="map"></div>
 	</body>
