@@ -9,7 +9,6 @@
     "url": ""
   },
   "dependencies" : {
-    "express"    : "latest",
     "fs"         : "latest",
     "request"    : "latest",
     "async"      : "latest",

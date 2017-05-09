@@ -33,7 +33,7 @@ function initialize() {
 }
 
 function getData() {
-    $.getJSON("data/loykrathong.json", function(json) {
+    $.getJSON("web/data/loykrathong.json", function(json) {
         NProgress.inc();
         data = json;
         data = data.filter(function(obj) {
@@ -56,7 +56,10 @@ function getData() {
 function createMapData() {
     createMapMarker();
     createHeatMap();
+    toggleMarker();
 }
+
+var contentStringList = [];
 
 function createMapMarker() {
     for(var i = 0; i < data.length; i++) {
@@ -64,10 +67,7 @@ function createMapMarker() {
         var contentString = '<img src="' + data[i].image + '" height="320" width="320">' +
             '<div>Location: ' + data[i].location.name + '</div>' +
             '<div>User: ' + data[i].username + '</div>';
-        var infowindow = new google.maps.InfoWindow({
-            content: contentString,
-            maxWidth: 320
-        });
+        contentStringList.push(contentString);
         var marker = new google.maps.Marker({
             position: {
                 lat: locationInfo.latitude,
@@ -76,11 +76,16 @@ function createMapMarker() {
             map: null,
             title: locationInfo.name
         });
-        google.maps.event.addListener(marker, 'click', (function(marker, infowindow) {
+        google.maps.event.addListener(marker, 'click', (function(marker, contentStringIndex) {
+            var _index=contentStringIndex;
             return function() {
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentStringList[_index],
+                    maxWidth: 320
+                });
                 infowindow.open(map, marker);
             };
-        })(marker, infowindow));
+        })(marker, i));
         markerList.push(marker);
     }
     renderMarker();
